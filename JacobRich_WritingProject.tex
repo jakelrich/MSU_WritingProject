@@ -1,0 +1,278 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[letterpaper, portrait, margin=1in]{geometry}
+\usepackage{grffile}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{comment}
+\usepackage{placeins}
+\usepackage{filecontents}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{afterpage}
+\usepackage[normalem]{ulem}
+
+%\usepackage[backend=biber]{biblatex}
+%\addbibresource{./ref.bib}
+
+\setlength{\parindent}{0.75cm}
+
+\makeatletter
+\newcommand{\distas}[1]{\mathbin{\overset{#1}{\kern\z@\sim}}}%
+\newsavebox{\mybox}\newsavebox{\mysim}
+\newcommand{\distras}[1]{%
+  \savebox{\mybox}{\hbox{\kern3pt$\scriptstyle#1$\kern3pt}}%
+  \savebox{\mysim}{\hbox{$\sim$}}%
+  \mathbin{\overset{#1}{\kern\z@\resizebox{\wd\mybox}{\ht\mysim}{$\sim$}}}%
+}
+\makeatother
+
+\newcommand{\R}{{\rm I\!R}}
+\newcommand{\T}{{\intercal}}
+\newcommand{\er}{{\bm{\varepsilon}}}
+\newcommand{\mb}[1]{$\bm{#1}$}
+\newcommand{\fin}{\textbf{Finish this thought}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \newpage}
+
+\newcommand{\lik}{\mathcal{L}}
+
+\lstset{
+basicstyle=\scriptsize\ttfamily,
+breaklines=true
+}
+
+%When the Levees Break: Fitting Generalized Linear Mixed Models
+
+\title{\textbf{DRAFT: Comparison of Fitting Methods of Generalized Linear Mixed Models}}
+\author{Jake Rich}
+\date{Coming to Theaters Sometime Spring 2018}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\textbf{\Large Running Notes}
+
+\begin{enumerate}[label=\arabic*.]
+  \item 
+\end{enumerate}
+
+\doublespacing
+
+\section{Introduction}
+
+Talk about modeling in Ecology/Evolutionary Biology to motivate GLMMs - keep in mind writing for statistics audience about applications in EE.
+
+Zuur's Owl example to start?
+
+\subsection{Introducing Linear Models}
+
+To motivate why there are a variety of fitting methods for GLMMs, we will first look at a very specific case of a GLMM, an ordinary linear regression model. Suppose we have the following linear model:
+
+\begin{align}
+\bm{y} = \bm{X\beta} + \er
+\end{align}
+
+where \mb{y} is an $n \times 1$ vector of responses, \mb{X} is the $n \times p$ full column rank design matrix, and \mb{\er} is an $n \times 1$ vector of random errors. In this model, the \mb{X\beta} portion is the deterministic portion of the model while the \mb{\er} portion is the probabilistic part of the model. 
+
+\begin{enumerate}[label=\arabic*.]
+  \item Independence and Normality of Errors: $\er \distas{iid} N(\bm{0}, \sigma^2\bm{I})$.
+  \item Linearity of Parameters: $\bm{y} = \bm{X\beta} + \er$.
+\end{enumerate}
+
+The parameters of the linear model are typically estimated using least squares estimation. Least squares defines the best estimate for the model parameters to be the estimator that minimizes the sum of squared errors (Faraway text). Importantly, this ordinary least squares (OLS) estimator is also the maximum likelihood (ML) estimator since it was specifed that the errors are assumed to be normally distributed. Provided these assumptions hold, the OLS estimator is prefered as the estimator will be BLUE, the best linear unbiased estimator, for the parameters in the model: $ \hat{\bm{\beta}}_{OLS} = (\bm{X}^{\T}\bm{X})^{-1}\bm{X}^{\T}\bm{y}$. The \mb{\beta} are the fixed effects and are specific to the sample and are not random variables. 
+
+In many applications, these assumptions are reasonably satisfied and OLS estimation can be used without issue. However, there are also many applications where one or more of those necessary assumptions are violated, which has lead to the development of other models. As of right now, the most versatile linear model available is the generalized linear mixed model (GLMM), which uses theory from linear mixed models which allow dependent errors (LMM) and generalized linear models (GLM) which allow for non-normally distributed errors. Building up to GLMMs, we will take a quick look at these two other classes of models and we will start with linear mixed models. 
+
+\subsubsection{Mixed Models}
+
+The assumption of independence of errors is a strong assumption that is quickly violated in many study designs with repeated measurements or nested observations. Suppose we wish to compare math test scores across a number of fifth grade classes in a school. It's reasonable to assume that students in one classroom with one teacher will be similar to some degree since they're all being taught by the same teacher, and the math scores might differ between classes. The independence assumption then would be violated as the responses (student scores) would be correlated at the classroom level due to many students being taught by the same teacher. Violating the independence assumption means that ordinary linear models could not be used as the error terms will not be independent and identically distributed.
+
+Mixed models are the solution to the independence violation as they account for correlation in between observations. In the testing example, students in each classroom would be correlated with one another. Having correlated observations leads to two major differences in the model. The first is that we would now have a second set of parameters known as random effects, which changes the model to,
+
+\begin{align}
+\bm{y} = \bm{X\beta} + \bm{Zb} + \er
+\end{align}
+
+where \mb{Z} is the $n \times q$ random effects design matrix and \mb{b} is a $q \times n$ vector of random effects. The second is that the errors are now allowed to be correlated in some way, whether that is by group membership, spatial, temporal, or spatio-temporal correlation of observations. The allowing of corrlated responses arises in the distribution of the errors, $\er \distas{} N(\bm{0}, \Sigma)$, where $\Sigma$ is the error variance-covariance matrix.
+
+Random effects are unobservable random variables with known distributions, typically $N(\bm{0}, D)$ where $D$ is the unknown random effects variance-covariance matrix, that we want to estimate. For our math testing example, each class room would have a random effect in the \mb{b} vector. Random effects differ from fixed effects in that the random effects are assumed to be a random sample of all possible levels and values of the variables with the intent to make inferences about the populations which the variables represent (506 Notes, mention fixed effects?). Random effects can take two forms. Random intercepts allow for different group means to vary around the overall mean while random slopes allow for a covariate to have a different slope for each group. For the test scores, random effects would allow for each class room to have it's own baseline mean by using random intercepts.
+
+In addition to the random effects, the variance components of the random effects are also of interest. With the variance components, we can determine how our groups vary compared to the individuals and see what varies more. Additionally, we can use the estimated variance components to calculate the intraclass correlation, a measure of the correlation between subjects within the levels of the mixed model. In order to estimate the multiple variance components in addition to the slope parameters, we need to change the estimation method from ordinary least squares.
+
+When using OLS while assuming errors are normally distributed, it was mentioned that the OLS estimator is not only BLUE, but it is the maximum likelihood estimate. With mixed models, we also could use ML estimation for the model parameters. Because of the additional components that need to be estimated though, we actually will end up with biased estimates of \mb{\beta} since those are treated as fixed quantities. Instead of ML estimation, we need to use restricted maximum likelihood (REML) estimation. With REML, we are modifying the likelihood such that the residuals ($\bm{y}-\bm{X\beta}$) conditional on the random effect 
+
+\subsubsection{Generalized Linear Models}
+
+As we saw in the owlet calls example, there are times when we would like to model a process but the errors are known to follow a distribution other than a normal distribution. In that case we knew that the number of calls per nest was likely to be distributed Poisson. While we might be able in certain cases to approximate a Poisson distribution with a normal distribution, we generally need to modify our linear model framework to accept other response error distributions. In these non-normal cases, we can turn to the generalized linear model.
+
+Generalized linear models allow for the modeling of responses from any distribution from the exponential family of distributions. The most common distributions used in GLMs include the binomial, Poisson, negative binomial, and gamma distributions. 
+
+\subsubsection{Generalized Linear Mixed Models}
+
+
+
+\section{Methods of Fitting GLMMs}
+
+The theory and implementation of generalized linear mixed models is a fairly new method compared to others like ANOVA or ordinary linear regression, with the most development in computational methods for GLMMs occurring in the past twenty-five years. The first wide spread introduction to these models came from Mccullagh and Nelder when they introduced penalized quasi-likelihood for estimation of the mean parameters of GLMMs (1989). Since then, a wide range of methods from both frequentist and Bayesian perspectives have been developed for inference on GLMMs 
+
+\subsection{Frequentist Approaches}
+
+Most common frequentist statistical approaches rely on the likelihood (usually the log-likelihood for simplicity) for use in estimation. As has been pointed out before, the use of the full likelihood function with GLMMs is  No frequentist approaches rely on the true likelihood due to the issues integration introduced with GLMMs - all are approximations. 
+
+Several methods exist and are categorized in to three categories based on the most commonly used methods in statistical practice. 
+
+\subsubsection{Penalized Quasi-Likelihood}
+
+The first common method of estimating parameters for a GLMM is penalized quasi-likelihood, which works through approximating the likelihood integrand or the data (both are equivalent conceptually). Penalized quasi-likelihood was introduced by Breslow and Clayton 
+
+Essentially, the GLMM to be fit is approximated by a linear mixed model, and then the approximate mixed model is estimated.
+
+Uses a first-order Taylor series approximation to linearize the link function, effectively linearizing the data and allowing for LMM methods to be used to estimate \mb{\beta} and \mb{\Sigma}. 
+
+\subsubsection{Laplace Approximation}
+
+
+
+\subsubsection{Adaptive Gauss-Hermite Quadrature}
+
+
+
+\subsection{Bayesian Approaches}
+
+Bayesian methods give an altogether different 
+
+\subsubsection{Metropolis-Hastings/MCMC Methods}
+
+
+
+\subsection{Monte Carlo EM-Algorithm Method}
+
+
+
+\section{Simulation Study of Performance of Fitting Methods}
+
+
+
+\subsection{Data Generation}
+
+
+
+\subsection{Model Fitting}
+
+
+
+\subsection{Model Evaluation}
+
+
+
+\section{Discussion}
+
+
+
+\section{References}
+
+
+
+\newpage 
+
+\section{R Code Appendix}
+
+
+\section{SAS Code Appendix}
+
+Dear god, it hurt to write that. 
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
