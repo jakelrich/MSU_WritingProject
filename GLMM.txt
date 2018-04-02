@@ -1,0 +1,32 @@
+
+model { 
+  #1. Diffuse priors for regression parameters.
+  beta ~ dmnorm(b0[], B0[,])
+  
+  #Diffuse priors for randoms effect hive
+  a ~ dmnorm(a0, tau.re*A0[,])
+  num ~ dnorm(0, 0.0016)
+  denom ~ dnorm(0,1)
+  sigma.re <- abs(num/denom)
+  tau.re <- 1 / (sigma.re*sigma.re)
+
+  #2. Likelihood
+  for (i in 1:N){
+    Y[i] ~ dpois(mu[i])
+    log(mu[i]) <- eta[i]
+    eta[i] <- inprod(beta[], X[i,]) + a[re[i]]
+    
+    #3. Discrepancy Measures
+    YNew[i] ~ dpois(mu[i]) #New Data
+    ExpY[i] <- mu[i]
+    VarY[i] <- mu[i]
+    PRes[i] <- (Y[i] - ExpY[i])/ sqrt(VarY[i])
+    PResNew[i] <- (YNew[i] - ExpY[i]) / sqrt(VarY[i])
+    D[i] <- pow(PRes[i], 2)
+    DNew[i] <- pow(PResNew[i], 2)
+  }
+
+  Fit <- sum(D[1:N])
+  FitNew <- sum(DNew[1:N])
+
+}
