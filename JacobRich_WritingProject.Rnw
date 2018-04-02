@@ -198,7 +198,7 @@ Uses a first-order Taylor series approximation to linearize the link function, e
 
 \subsubsection{Adaptive Gauss-Hermite Quadrature}
 
-
+GHQ is at its heart a generalization of Laplace approximation, and when the number of points is $n=1$, GHQ is Laplace approximation. 
 
 \subsection{Bayesian Approaches}
 
