@@ -96,10 +96,10 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
-  \tableofcontents
+%\begin{frame}{Outline}
+  %\tableofcontents
   % You might wish to add the option [pausesections]
-\end{frame}
+%\end{frame}
 
 
 %    \begin{block}{Block Title}
@@ -135,19 +135,98 @@
 \end{frame}
 
 \begin{frame}{Issues with Estimation}
-	
 	 \begin{block}{Problem:}
       The likelihood functions of GLMMs involve high-dimensional integrals that lack closed form solutions, making evaluation of the exact likelihood function essentially impossible. 
    \end{block}
 	
 	\begin{itemize}
-		\item  
+		\item 
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{GLMM Estimation Methods}
 	
+	\begin{itemize}
+		\item In place of closed form solutions, a number of approximation methods have been developed since the first major introduction of GLMMs by McCullagh and Nelder (1989). Commonly used approximations include:
+    	\begin{itemize}
+    		\item Penalized Quasi-likelihood
+    		\item Laplace Approximation
+    		\item (Adaptive) Gaussian Hermite Quadrature (AGHQ)
+    	\end{itemize}
+		\item Bayesian approaches to GLMMs are also commonly used as it sidesteps the issues integration issues involved with the exact likelihood.
+		\item Non-Bayesian Monte Carlo methods are available, but their implementation is not easy and are poorly documented.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Penalized Quasi-likelihood}
+	
+	\begin{itemize}
+		\item PQL was introduced by Breslow and Clayton as a method of approximating the integral 
+    	\begin{itemize}
+    		\item 
+    	\end{itemize}
+		\item
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Laplace Approximation and AGHQ}
+	
+	\begin{itemize}
+		\item 
+    	\begin{itemize}
+    		\item 
+    	\end{itemize}
+		\item
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bayesian Approach}
+	
+	\begin{itemize}
+		\item 
+    	\begin{itemize}
+    		\item 
+    	\end{itemize}
+		\item JAGS by way of {\tt rjags} was used in the simulation study. 
+	\end{itemize}
+
+\end{frame}
+
+\section{Simulation Study}
+
+\begin{frame}{Data Generation and Study Design}
+	
+	\begin{itemize}
+		\item The {\tt simr} package was used to generate new responses based on an original Poisson GLMM fit to the owlet data, fixing all covariates and random effects. 
+		\item Model
+		\item During the simulations, the estimates of the fixed effects, random effects, and the variance of the random effects were recorded.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Results}
+	
+	\begin{itemize}
+		\item Pretty empirical sampling distributions of selected components. 
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+	
+	\begin{itemize}
+		\item It's likely that {\tt glmer} works just fine in most cases, especially when using AGHQ, and is adequate in most cases. 
+		\item PQL to show biased variance component estimates for small cluster sizes, but with large samples it doesn't matter much. 
+		\item Extensions: using {\tt simr} to change aspects of the model to see how performance differs for other cases. 
+	\end{itemize}
+
+\end{frame}
+
 %\begin{figure}
 %	\includegraphics[scale=0.45]{Correlationexamples2.png}
 %\end{figure}
-	
-\end{frame}
 
 \end{document}

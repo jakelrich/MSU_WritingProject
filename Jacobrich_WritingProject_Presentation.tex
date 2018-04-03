@@ -97,7 +97,7 @@
 
 \usepackage{amsmath}
 
-\title{Comparison of GLMM Parameter Estimation Methods}
+\title{Comparison of GLMM Estimation Methods}
 
 % A subtitle is optional and this may be deleted
 
@@ -147,10 +147,10 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
-  \tableofcontents
+%\begin{frame}{Outline}
+  %\tableofcontents
   % You might wish to add the option [pausesections]
-\end{frame}
+%\end{frame}
 
 
 %    \begin{block}{Block Title}
@@ -166,7 +166,7 @@
         \item In ecological and evolutionary biology, ordinary linear models are not always well suited for data analysis.
         \begin{itemize}
           \item Presence/absence and count data are two common situations where a linear model is not well suited (non-normal responses).
-          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements violate independence assumptions (correlated observations). \pause
+          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements violate independence assumptions (correlated observations).
         \end{itemize}
         \item If both non-normal responses and correlated observations occur in a dataset, we can use generalized linear mixed models (GLMMs) for estimation and inference.
   \end{itemize}
@@ -179,25 +179,35 @@
           \item Data consist of 599 observations from 27 barn owl nests in western Switzerland.
           \item Response: number of calls in a 30 sec. interval before the parent arrived. 
           \item Covariates used: brood size, food treatment, and arrival time of parent (between 2130 and 0530 hours).
+          \item Nest is treated as a random effect. 
         \end{itemize}
         \item Observations are correlated at the nest level due to repeated measurements and the count data should follow a Poisson distribution. 
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Issues with Estimation}
-	
 	 \begin{block}{Problem:}
       The likelihood functions of GLMMs involve high-dimensional integrals that lack closed form solutions, making evaluation of the exact likelihood function essentially impossible. 
    \end{block}
 	
 	\begin{itemize}
-		\item  \pause
+		\item In place of closed form solutions, a number of approximation methods have been developed since the introduction of GLMMs by McCullagh and Nelder (1989).           Commonly used approximations include:
+    	\begin{itemize}
+    		\item Penalized Quasi-likelihood
+    		\item Laplace Approximation
+    		\item (Adaptive) Gaussian Hermite Quadrature
+    	\end{itemize}
+		\item Bayesian approaches to GLMMs are also commonly used as it sidesteps the issues integration issues involved with the exact likelihood.
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{GLMM Estimation Methods}
 	
+
+\end{frame}
+
 %\begin{figure}
 %	\includegraphics[scale=0.45]{Correlationexamples2.png}
 %\end{figure}
-	
-\end{frame}
 
 \end{document}
