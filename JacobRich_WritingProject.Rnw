@@ -127,7 +127,7 @@ Talk about modeling in Ecology/Evolutionary Biology to motivate GLMMs - keep in 
 
 Zuur's Owl example to start?
 
-\subsection{Introducing Linear Models}
+\subsection{Background}
 
 To motivate why there are a variety of fitting methods for GLMMs, we will first look at a very specific case of a GLMM, an ordinary linear regression model. Suppose we have the following linear model:
 
@@ -135,22 +135,24 @@ To motivate why there are a variety of fitting methods for GLMMs, we will first 
 \bm{y} = \bm{X\beta} + \er
 \end{align}
 
-where \mb{y} is an $n \times 1$ vector of responses, \mb{X} is the $n \times p$ full column rank design matrix, and \mb{\er} is an $n \times 1$ vector of random errors. In this model, the \mb{X\beta} portion is the deterministic portion of the model while the \mb{\er} portion is the probabilistic part of the model. 
+where \mb{y} is an $n \times 1$ vector of responses, \mb{X} is the $n \times p$ design matrix which is assumed to be full column rank and have fixed values, \mb{\beta} and \mb{\er} is an $n \times 1$ vector of random errors. In this model, the \mb{X\beta} portion is the deterministic portion of the model while the \mb{\er} portion is the probabilistic part of the model. 
 
 \begin{enumerate}[label=\arabic*.]
-  \item Independence and Normality of Errors: $\er \distas{iid} N(\bm{0}, \sigma^2\bm{I})$.
-  \item Linearity of Parameters: $\bm{y} = \bm{X\beta} + \er$.
+  \item $\er \distas{iid} N(\bm{0}, \sigma^2\bm{I})$.
+  \item $\bm{X\beta}$ is linear in the $\beta$'s.
 \end{enumerate}
 
-The parameters of the linear model are typically estimated using least squares estimation. Least squares defines the best estimate for the model parameters to be the estimator that minimizes the sum of squared errors (Faraway text). Importantly, this ordinary least squares (OLS) estimator is also the maximum likelihood (ML) estimator since it was specifed that the errors are assumed to be normally distributed. Provided these assumptions hold, the OLS estimator is prefered as the estimator will be BLUE, the best linear unbiased estimator, for the parameters in the model: $ \hat{\bm{\beta}}_{OLS} = (\bm{X}^{\T}\bm{X})^{-1}\bm{X}^{\T}\bm{y}$. The \mb{\beta} are the fixed effects and are specific to the sample and are not random variables. 
+The parameters in \mb{\beta} are typically estimated using least squares estimation. Least squares are obtained through minimizing the sum of squared residuals (Faraway text). Provided error distribution and linearity assumptions hold, the OLS estimates will be BLUE, the best linear unbiased estimator, for the $\beta$'s. The \mb{\beta} effects and are specific to the sample and are not random variables. Importantly, the ordinary least squares estimator, $\hat{\bm{\beta}}_{OLS} = (\bm{X}^{\T}\bm{X})^{-1}\bm{X}^{\T}\bm{y}$, is also the maximum likelihood (ML) estimator since it was specifed that the errors are assumed to be normally distributed.
 
 In many applications, these assumptions are reasonably satisfied and OLS estimation can be used without issue. However, there are also many applications where one or more of those necessary assumptions are violated, which has lead to the development of other models. As of right now, the most versatile linear model available is the generalized linear mixed model (GLMM), which uses theory from linear mixed models which allow dependent errors (LMM) and generalized linear models (GLM) which allow for non-normally distributed errors. Building up to GLMMs, we will take a quick look at these two other classes of models and we will start with linear mixed models. 
 
 \subsubsection{Mixed Models}
   
-The assumption of independence of errors is a strong assumption that is quickly violated in many study designs with repeated measurements or nested observations. Suppose we wish to compare math test scores across a number of fifth grade classes in a school. It's reasonable to assume that students in one classroom with one teacher will be similar to some degree since they're all being taught by the same teacher, and the math scores might differ between classes. The independence assumption then would be violated as the responses (student scores) would be correlated at the classroom level due to many students being taught by the same teacher. Violating the independence assumption means that ordinary linear models could not be used as the error terms will not be independent and identically distributed.
+The assumption of independence of errors is a strong assumption that is quickly violated in many study designs with repeated measurements, clustered observations, or within spatial elements. 
 
-Mixed models are the solution to the independence violation as they account for correlation in between observations. In the testing example, students in each classroom would be correlated with one another. Having correlated observations leads to two major differences in the model. The first is that we would now have a second set of parameters known as random effects, which changes the model to,
+Suppose we wish to compare  across a number of fifth grade classes in a school. It's reasonable to assume that students in one classroom with one teacher will be similar to some degree since they're all being taught by the same teacher, and the math scores might differ between classes. The independence assumption then would be violated as the responses (student scores) would be correlated at the classroom level due to many students being taught by the same teacher. Violating the independence assumption means that ordinary linear models could be used, but the estimates will no longer be BLUE.
+
+Mixed models are an alternative to the independence violation as they account for correlation in between observations. In the testing example, students in each classroom would be correlated with one another. Having correlated observations leads to two major differences in the model. The first is that we would now have a second set of model components known as random effects, which changes the model to,
 
 \begin{align}
 \bm{y} = \bm{X\beta} + \bm{Zb} + \er
@@ -170,13 +172,13 @@ As we saw in the owlet calls example, there are times when we would like to mode
 
 Generalized linear models allow for the modeling of responses from any distribution from the exponential family of distributions. The most common distributions used in GLMs include the binomial, Poisson, negative binomial, and gamma distributions. 
 
-\subsubsection{Generalized Linear Mixed Models}
+\subsection{Generalized Linear Mixed Models}
 
 
 
 \section{Methods of Fitting GLMMs}
 
-The theory and implementation of generalized linear mixed models is a fairly new method compared to others like ANOVA or ordinary linear regression, with the most development in computational methods for GLMMs occurring in the past twenty-five years. The first wide spread introduction to these models came from Mccullagh and Nelder when they introduced penalized quasi-likelihood for estimation of the mean parameters of GLMMs (1989). Since then, a wide range of methods from both frequentist and Bayesian perspectives have been developed for inference on GLMMs 
+The theory and implementation of generalized linear mixed models is a fairly new method compared to others like ANOVA or ordinary linear regression, with the most development in computational methods for GLMMs occurring in the past twenty-five years. The first wide spread introduction to these models came from Mccullagh and Nelder when they introduced penalized quasi-likelihood for estimation of the mean parameters of GLMMs (1989). Since then, a range of methods from both frequentist and Bayesian perspectives have been developed for inference on GLMMs 
 
 \subsection{Frequentist Approaches}
 
@@ -241,9 +243,6 @@ Bayesian methods give an altogether different
 \section{R Code Appendix}
 
 
-\section{SAS Code Appendix}
-
-Dear god, it hurt to write that. 
 
 \end{document}
 

@@ -7,7 +7,7 @@ model {
   a ~ dmnorm(a0, tau.re*A0[,])
   num ~ dnorm(0, 0.0016)
   denom ~ dnorm(0,1)
-  sigma.re <- abs(num/denom)
+  sigma.re <- abs(num/(denom*denom))
   tau.re <- 1 / (sigma.re*sigma.re)
 
   #2. Likelihood
