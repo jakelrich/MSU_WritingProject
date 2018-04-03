@@ -181,13 +181,19 @@ Random effects are unobservable random variables with known distributions, typic
 
 In addition to the random effects, the variance components of the random effects are also of interest. With the variance components, we can determine how our groups vary compared to the individuals and see what varies more. Additionally, we can use the estimated variance components to calculate the intraclass correlation, a measure of the correlation between subjects within the levels of the mixed model. In order to estimate the multiple variance components in addition to the slope parameters, we need to change the estimation method from ordinary least squares.
 
-When using OLS while assuming errors are normally distributed, it was mentioned that the OLS estimator is not only BLUE, but it is the maximum likelihood estimate. With mixed models, we also could use ML estimation for the model parameters. Because of the additional components that need to be estimated though, we actually will end up with biased estimates of \mb{\beta} since those are treated as fixed quantities. Instead of ML estimation, we need to use restricted maximum likelihood (REML) estimation. With REML, we are modifying the likelihood such that the residuals ($\bm{y}-\bm{X\beta}$) conditional on the random effect 
+When using OLS while assuming errors are normally distributed, it was mentioned that the OLS estimator is not only BLUE, but it is the maximum likelihood estimate. With mixed models, we also could use ML estimation for the model parameters. Because of the additional components that need to be estimated though, we actually will end up with biased estimates of \mb{\beta} since those are treated as fixed quantities. Instead of ML estimation, we need to use restricted maximum likelihood (REML) estimation. With REML, we are modifying the likelihood such that the residuals ($\bm{y}-\bm{X\beta}$) conditional on the random effect have a known mean of 0.
 
 \subsubsection{Generalized Linear Models}
 
 As we saw in the owlet calls example, there are times when we would like to model a process but the errors are known to follow a distribution other than a normal distribution. In that case we knew that the number of calls per nest was likely to be distributed Poisson. While we might be able in certain cases to approximate a Poisson distribution with a normal distribution, we generally need to modify our linear model framework to accept other response error distributions. In these non-normal cases, we can turn to the generalized linear model.
 
-Generalized linear models allow for the modeling of responses from any distribution from the exponential family of distributions. The most common distributions used in GLMs include the binomial, Poisson, negative binomial, and gamma distributions. 
+Generalized linear models allow for the modeling of responses from any distribution from the exponential family of distributions. The most common distributions used in GLMs include the binomial, Poisson, negative binomial, and gamma distributions, but any exponential family distribution can be used provided it has a density function that can be written as,
+
+\begin{align}
+f(y|\theta, \phi) = exp\Big\{\frac{y\theta-b(\theta)}{\phi} + c(y,f(y)) \Big\}
+\end{align}
+
+where $\theta$ is the canonical parameter, $\phi$ is the scale parameter (if it exists), and $b(\dot)$ and $c(\dot)$ are some functions (Skrondal). Being able to draw from any exponential family distribution that  The key to being able to have a non-normal response with a linear model is the use of link functions. A link function is a differentiable, monotonic function that maps between the mean of the data and the linear predictor $\bm{X\beta}$ and allows us to maintain the linearity assumption (SAS). 
 
 \subsubsection{Generalized Linear Mixed Models}
 
@@ -195,11 +201,11 @@ Generalized linear models allow for the modeling of responses from any distribut
 
 \section{Methods of Fitting GLMMs}
 
-The theory and implementation of generalized linear mixed models is a fairly new method compared to others like ANOVA or ordinary linear regression, with the most development in computational methods for GLMMs occurring in the past twenty-five years. The first wide spread introduction to these models came from Mccullagh and Nelder when they introduced penalized quasi-likelihood for estimation of the mean parameters of GLMMs (1989). Since then, a wide range of methods from both frequentist and Bayesian perspectives have been developed for inference on GLMMs 
+The theory and implementation of generalized linear mixed models is a fairly new method compared to others like ANOVA or ordinary linear regression, with the most development in computational methods for GLMMs occurring in the past twenty-five years. The first wide spread introduction to these models came from Mccullagh and Nelder when they introduced penalized quasi-likelihood for estimation of the mean parameters of GLMMs (1989). Since then, a wide range of methods from both classical and Bayesian perspectives have been developed for inference on GLMMs.
 
-\subsection{Frequentist Approaches}
+\subsection{Likelihood-based Approaches}
 
-Most common frequentist statistical approaches rely on the likelihood (usually the log-likelihood for simplicity) for use in estimation. As has been pointed out before, the use of the full likelihood function with GLMMs is  No frequentist approaches rely on the true likelihood due to the issues integration introduced with GLMMs - all are approximations. 
+Most common classical statistical approaches rely on the likelihood (usually the log-likelihood for simplicity) for use in estimation. As has been pointed out before, the use of the full likelihood function with GLMMs is not possible due to the intractible high-dimensional integrals involved. Because of this, classical approaches to GLMMs require approximations of either the likelihood integrals (adaptive Gaussian-Hermite quadrature). 
 
 Several methods exist and are categorized in to three categories based on the most commonly used methods in statistical practice. 
 
@@ -213,7 +219,7 @@ Uses a first-order Taylor series approximation to linearize the link function, e
 
 \subsubsection{Laplace Approximation}
 
-
+Relies on a Taylor series expansion of the exponent of a given integrand.
 
 \subsubsection{Adaptive Gauss-Hermite Quadrature}
 
@@ -221,7 +227,7 @@ Uses a first-order Taylor series approximation to linearize the link function, e
 
 \subsection{Bayesian Approaches}
 
-Bayesian methods give an altogether different 
+Bayesian methods take an altogether different approach, 
 
 \subsubsection{Metropolis-Hastings/MCMC Methods}
 
@@ -229,7 +235,7 @@ Bayesian methods give an altogether different
 
 \subsection{Monte Carlo EM-Algorithm Method}
 
-
+A third subsection of methods for fitting GLMMs lies in the space between likelihood-based and Bayesian approaches and combines the numeric integration techniques from Bayesian statistics with a maximization algorithm. This hybrid approach utilizes Monte Carlo integration and the expectation-maximization algorithm to maximize the exact GLMM likelihoods. Because of the Monte Carlo step, the likelihood function just needs to be known - none of the integrations need to be performed, avoiding the issues with the classical approaches. This MCEM approach was introduced by 
 
 \section{Simulation Study of Performance of Fitting Methods}
 

@@ -10,7 +10,57 @@
 % modify this file as you see fit and even to delete this copyright
 % notice. 
 
-\documentclass{beamer}
+\documentclass{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 % There are many different themes available for Beamer. A comprehensive
 % list with examples is given here:
@@ -47,7 +97,7 @@
 
 \usepackage{amsmath}
 
-\title{Comparison of GLMM Estimation Methods}
+\title{Comparison of GLMM Parameter Estimation Methods}
 
 % A subtitle is optional and this may be deleted
 
@@ -90,6 +140,7 @@
 %}
 
 % Let's get started
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 \begin{frame}
@@ -115,7 +166,7 @@
         \item In ecological and evolutionary biology, ordinary linear models are not always well suited for data analysis.
         \begin{itemize}
           \item Presence/absence and count data are two common situations where a linear model is not well suited (non-normal responses).
-          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements violate independence assumptions (correlated observations).
+          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements violate independence assumptions (correlated observations). \pause
         \end{itemize}
         \item If both non-normal responses and correlated observations occur in a dataset, we can use generalized linear mixed models (GLMMs) for estimation and inference.
   \end{itemize}
@@ -128,7 +179,6 @@
           \item Data consist of 599 observations from 27 barn owl nests in western Switzerland.
           \item Response: number of calls in a 30 sec. interval before the parent arrived. 
           \item Covariates used: brood size, food treatment, and arrival time of parent (between 2130 and 0530 hours).
-          \item Nest is treated as a random effect. 
         \end{itemize}
         \item Observations are correlated at the nest level due to repeated measurements and the count data should follow a Poisson distribution. 
   \end{itemize}
@@ -141,7 +191,7 @@
    \end{block}
 	
 	\begin{itemize}
-		\item  
+		\item  \pause
 	\end{itemize}
 	
 %\begin{figure}

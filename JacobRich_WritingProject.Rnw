@@ -204,7 +204,7 @@ GHQ is at its heart a generalization of Laplace approximation, and when the numb
 
 \subsection{Bayesian Approaches}
 
-Bayesian methods give an altogether different 
+Bayesian methods give an altogether different f
 
 \subsubsection{Metropolis-Hastings/MCMC Methods}
 
