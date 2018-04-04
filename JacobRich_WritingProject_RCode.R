@@ -139,7 +139,7 @@ glmm.sim <- function(model_object, iter, seed){
     win.data1 <- list(Y = sim_dat$Calls, X = X, N = nrow(sim_dat), re = sim_dat$Nest,
                       b0 = rep(0, K), B0 = diag(0.0001, K), a0 = rep(0, Nre), A0 = diag(Nre))
     J0 <- jags.model(file = "GLMM.txt", data = win.data1, inits = inits1,
-                     n.chains = 4, n.adapt = 125000)
+                    n.chains = 4, n.adapt = 125000)
     mcmc.samples <- coda.samples(J0, params1, n.iter = 75000, thin = 5)
     bayes_stats <- summary(mcmc.samples)$statistics
         
@@ -166,21 +166,34 @@ glmm.sim <- function(model_object, iter, seed){
   }
   
   ###Saving as a list for returning    
-  sim_results <- list(beta_ests, rand_ests, sigma_re_ests)
+  sim_results <- list(beta = beta_ests, rand = rand_ests, sigma = sigma_re_ests)
+  ###Saving simulations as RData file every 50 iterations (just in case).
+  if(iter==1 | iter==50 | iter==100 | iter==150 | iter==200 | iter==250 | iter==300 | iter==350 | iter==400 | iter==450 | iter==500){
+    saveRDS(sim_results, file = "D:/Google Drive/18 - Writing Project/simulations.RData")
+  }
   return(sim_results)
 }
 ###Implementing Simulation
 param_ests <- glmer(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime + (1|Nest),
                     data = owl_dat, family = poisson, nAGQ = 25)
-system.time(test <- glmm.sim(param_ests, 1, 54177))
-simulations <- test
+system.time(simulations <- glmm.sim(param_ests, 1, 54177))
 ###Saving simulations as RData file (just in case).
-saveRDS(simulations, file = "D:/Google Drive/18 - Writing Project/sim.RData")
+saveRDS(simulations, file = "D:/Google Drive/18 - Writing Project/simulations.RData")
+readRDS("D:/Google Drive/18 - Writing Project/simulations.RData")
 
 
-
-
-
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
+###########################################################
 ###########################################################
 ###########################################################
 #Scratch Pad
