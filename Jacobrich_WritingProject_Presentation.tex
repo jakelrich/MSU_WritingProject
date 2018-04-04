@@ -181,28 +181,104 @@
           \item Covariates used: brood size, food treatment, and arrival time of parent (between 2130 and 0530 hours).
           \item Nest is treated as a random effect. 
         \end{itemize}
-        \item Observations are correlated at the nest level due to repeated measurements and the count data should follow a Poisson distribution. 
+        \item Observations are correlated at the nest level due to repeated measurements and the count data should follow a Poisson distribution. The resulting model is:
   \end{itemize}
+  
 \end{frame}
 
 \begin{frame}{Issues with Estimation}
 	 \begin{block}{Problem:}
       The likelihood functions of GLMMs involve high-dimensional integrals that lack closed form solutions, making evaluation of the exact likelihood function essentially impossible. 
    \end{block}
+   
+   \begin{itemize}
+		\item $f(Y_{ij}|b_i)$ and $f(b_i)$ are not normal distributions.
+	\end{itemize}
+   
+   $$ L(\beta, D) = \prod_i \int f(Y_{ij}|b_i)f(b_i) db_i $$
 	
 	\begin{itemize}
-		\item In place of closed form solutions, a number of approximation methods have been developed since the introduction of GLMMs by McCullagh and Nelder (1989).           Commonly used approximations include:
-    	\begin{itemize}
-    		\item Penalized Quasi-likelihood
-    		\item Laplace Approximation
-    		\item (Adaptive) Gaussian Hermite Quadrature
-    	\end{itemize}
-		\item Bayesian approaches to GLMMs are also commonly used as it sidesteps the issues integration issues involved with the exact likelihood.
+		\item Because of that, approximations of the integration or of the likelihood function need to be used. 
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{GLMM Estimation Methods}
 	
+	\begin{itemize}
+		\item In place of closed form solutions, a number of approximation methods have been developed since the first major introduction of GLMMs by McCullagh and Nelder (1989). Commonly used approximations include:
+    	\begin{itemize}
+    	  \item Laplace Approximation
+    		\item (Adaptive) Gaussian Hermite Quadrature (AGHQ)
+    		\item Penalized Quasi-likelihood
+    	\end{itemize}
+		\item Bayesian approaches to GLMMs are also commonly used as it sidesteps the issues integration issues involved with the exact likelihood.
+		\item Non-Bayesian Monte Carlo methods are available, but their implementation is not easy and are poorly documented.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Laplace Approximation and AGHQ}
+	
+	\begin{itemize}
+		\item Laplace approximation relies on a Taylor series approximation of the likelihood function to give an integrable result.
+		\item Adaptive Gaussian Hermite Quadrature is a generalization of Laplace approximation, and AGHQ with one quadrature point is Laplacian approximation. 
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Penalized Quasi-likelihood}
+	
+	\begin{itemize}
+		\item PQL for GLMMs was introduced by Breslow and Clayton and relies on a Laplace approximation of the likelihood.
+	  \begin{itemize}
+		  \item Quasi-likelihoods are not related to a true probability distribution, only specifying the relationship between the mean and variance.
+    \end{itemize}
+    \item Implementing PQL relies on weighted least-squares for estimating the mean parameters and uses an approximating normal model for estimation of the variance components.
+		\item One issue with PQL is that it can result in downwardly biased variance component estimates. 
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bayesian Approach}
+	
+	Need to flesh out the model/priors here. 
+	
+	\begin{itemize}
+		\item Adapted JAGS code from Zuur.
+		\item Relied on weakly informative priors.
+		\item Focused on posterior means for comparisons.
+	\end{itemize}
+
+\end{frame}
+
+\section{Simulation Study}
+
+\begin{frame}{Data Generation and Study Design}
+	
+	\begin{itemize}
+		\item The {\tt simr} package was used to generate new responses based on an original Poisson GLMM fit to the owlet data, fixing all covariates and random effects.
+		\item For each iteration of the simulation, models using the four estimation models were fit. 
+		\item Estimates of the fixed effects, random effects, and the variance of the random effects were recorded.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Results}
+	
+	\begin{itemize}
+		\item Pretty empirical sampling distributions of selected components.
+		\item Will be comparing bias, spread, and distribution across methods. 
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+	
+	\begin{itemize}
+		\item It's likely that {\tt glmer} works just fine in most cases, especially when using AGHQ, and is adequate in most cases. 
+		\item PQL to show biased variance component estimates for small cluster sizes, but with large samples it doesn't matter much. 
+		\item Extensions: using {\tt simr} to change aspects of the model to see how performance differs for other cases. 
+	\end{itemize}
 
 \end{frame}
 

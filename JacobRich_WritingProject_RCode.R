@@ -9,7 +9,8 @@
 #NOTE: You must have JAGS installed before using any of the Bayesian analyses
 #in this script.
 ######
-list_of_packages <- c("lme4","MCMCglmm","coda","glmm","ggplot2","RCurl", "simr","devtools","rjags","mcemGLM","MASS","glmmML","GLMMmisc")
+list_of_packages <- c("lme4","MCMCglmm","coda","glmm","ggplot2","RCurl", "simr","devtools",
+                      "rjags","mcemGLM","MASS","glmmML","GLMMmisc","nlme")
 new.packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
 if (!require("GLMMmisc")) devtools::install_github("pcdjohnson/GLMMmisc")
 if(length(new.packages)) install.packages(new.packages)
@@ -17,11 +18,11 @@ lapply(list_of_packages, library, character.only = TRUE)
 #Installing GLMMmisc from Github. GLMMmisc is a package of GLMM diagnostic tools
 #and other functions that are useful with GLMMs. 
 
-
 #Loading in dataset(s) and cleaning
 owl_dat <-read.table(text=getURL("https://raw.githubusercontent.com/jakelrich/MSU_WritingProject/master/Owls.txt"), header=T)
 owl_dat$Calls <- owl_dat$SiblingNegotiation
-head(owl_dat)
+#Saving a copy of the dataset for simulation
+sim_dat <- owl_dat
 ###Exploratory Data Analysis
 
 ###Writing Simulation Function
@@ -39,17 +40,12 @@ head(owl_dat)
 ###########
 #Notes: simulate.merMod (lme4) will simulate from a glmer object.
 ###########
-glmm.sim <- function(model, iter, seed){
-  ###Setting simulation seed
-  set.seed(seed)
-  ###Generating new responses
-  #use simr 
-  
+glmm.sim <- function(model_object, iter, seed){
   ###Initializing storage matrices
-  beta_ests <- matrix(0, 10, 12)
+  beta_ests <- matrix(0, iter, 12)
   colnames(beta_ests) <- c("PQL_B1", "PQL_B2", "PQL_B3", "LA_B1", "LA_B2", "LA_B3",
                            "AGHQ_B1", "AGHQ_B2", "AGHQ_B3", "JAGS_B1", "JAGS_B2", "JAGS_B3")
-  rand_ests <- matrix(0, 10, 108)
+  rand_ests <- matrix(0, iter, 108)
   colnames(rand_ests) <- c("PQL_1", "PQL_2", "PQL_3", "PQL_4", "PQL_5", "PQL_6", "PQL_7",
                            "PQL_8", "PQL_9", "PQL_10", "PQL_11", "PQL_12", "PQL_13", "PQL_14",
                            "PQL_15", "PQL_16", "PQL_17", "PQL_18", "PQL_19", "PQL_20", "PQL_21",
@@ -114,30 +110,37 @@ glmm.sim <- function(model, iter, seed){
   ###Running simulations
   for(i in 1:length(iter)){
     
+    ###Setting simulation seed
+    set.seed(seed+iter)
+    
+    ###Generating new responses
+    #use simr 
+    sim_dat$Calls <- doSim(model_object)
+    
     ###Fitting Classical Models
     #Penalized Quasi-likelihood
     owl_glmmPQL <- glmmPQL(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime, random = ~ 1|Nest,
-                           data = owl_dat, family = poisson, verbose=FALSE)
+                           data = sim_dat, family = poisson, verbose=FALSE)
     #Laplace Approximation
     owl_glmer_LA <- glmer(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime + (1|Nest),
-                          data = owl_dat, family = poisson, nAGQ = 1)
+                          data = sim_dat, family = poisson, nAGQ = 1)
     #Adaptive Gaussian-Hermite Quadrature
     owl_glmer_AGHQ <- glmer(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime + (1|Nest),
-                            data = owl_dat, family = poisson, nAGQ = 25)
+                            data = sim_dat, family = poisson, nAGQ = 25)
     #Storing summaries for later use
     PQL <- summary(owl_glmmPQL)
-    LA <- summary(owl_glmer_LA)1
+    LA <- summary(owl_glmer_LA)
     AGHQ <- summary(owl_glmer_AGHQ)
     
     ###Fitting Bayesian Model with JAGS
     X <- model.matrix(owl_glmer_AGHQ)
     K <- ncol(X)
-    Nre <- length(unique(owl_dat$Nest))
-    win.data1 <- list(Y = owl_dat$Calls, X = X, N = nrow(owl_dat), re = owl_dat$Nest,
+    Nre <- length(unique(sim_dat$Nest))
+    win.data1 <- list(Y = sim_dat$Calls, X = X, N = nrow(sim_dat), re = sim_dat$Nest,
                       b0 = rep(0, K), B0 = diag(0.0001, K), a0 = rep(0, Nre), A0 = diag(Nre))
     J0 <- jags.model(file = "GLMM.txt", data = win.data1, inits = inits1,
-                         n.chains = 4, n.adapt = 250000)
-    mcmc.samples <- coda.samples(J0, params1, n.iter = 100000, thin = 10)
+                     n.chains = 4, n.adapt = 125000)
+    mcmc.samples <- coda.samples(J0, params1, n.iter = 75000, thin = 5)
     bayes_stats <- summary(mcmc.samples)$statistics
         
     ###Storing beta estimates
@@ -157,12 +160,26 @@ glmm.sim <- function(model, iter, seed){
     sigma_re_ests[i,2] <- sqrt(c(LA$varcor$Nest))
     sigma_re_ests[i,3] <- sqrt(c(AGHQ$varcor$Nest))
     sigma_re_ests[i,4] <- bayes_stats[33,1]
+    
+    ###(Hopefully) print the iteration of simulation
+    print(iter)
   }
   
   ###Saving as a list for returning    
   sim_results <- list(beta_ests, rand_ests, sigma_re_ests)
   return(sim_results)
 }
+###Implementing Simulation
+param_ests <- glmer(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime + (1|Nest),
+                    data = owl_dat, family = poisson, nAGQ = 25)
+system.time(test <- glmm.sim(param_ests, 1, 54177))
+simulations <- test
+###Saving simulations as RData file (just in case).
+saveRDS(simulations, file = "D:/Google Drive/18 - Writing Project/sim.RData")
+
+
+
+
 
 ###########################################################
 ###########################################################
@@ -174,6 +191,7 @@ owl_dat$Calls <- owl_dat$SiblingNegotiation
 owl_glmmPQL <- glmmPQL(Calls ~ offset(BroodSize) + FoodTreatment + ArrivalTime, random = ~ 1|Nest,
                        data = owl_dat, family = poisson)
 summary(owl_glmmPQL)
+c(getVarCov(owl_glmmPQL))
 ###Likelihood-based Analysis using glmer
 library(lme4)
 #Laplace Approximation
@@ -253,9 +271,9 @@ inits1 <- function() {
 params1 <- c('beta', 'a', 'sigma.re', 'Fit', 'FitNew')
 
 J0 <- jags.model(file = "GLMM.txt", data = win.data1, inits = inits1,
-                 n.chains = 4, n.adapt = 250000)
+                 n.chains = 4, n.adapt = 125000)
 
-mcmc.samples <- coda.samples(J0, params1, n.iter = 100000, thin = 10)
+mcmc.samples <- coda.samples(J0, params1, n.iter = 75000, thin = 5)
 
 plot(mcmc.samples)
 summary(mcmc.samples)
