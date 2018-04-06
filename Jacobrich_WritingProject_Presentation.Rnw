@@ -47,7 +47,7 @@
 
 \usepackage{amsmath}
 
-\title{Comparison of GLMM Estimation Methods}
+\title{Comparison of Estimation Methods for Generalized Linear Mixed Models}
 
 % A subtitle is optional and this may be deleted
 
@@ -110,29 +110,28 @@
 % and table of contents.
 \section{Background}
 
+\begin{frame}{A Motivating Example}
+  \begin{itemize}
+        \item Owlet begging data from Roulin and Bersier (2007).
+        \begin{itemize}
+          \item 599 observations from 27 barn owl nests in western Switzerland.
+          \item Response: number of calls in a 30 sec. interval.
+          \item Covariates used: brood size, food treatment, and arrival time of parent. \pause
+        \end{itemize}
+        \item Observations are correlated at the nest level due to repeated measurements and the count data likely follow a Poisson distribution.
+  \end{itemize}
+  
+\end{frame}
+
 \begin{frame}{Generalized Linear Mixed Models}
   \begin{itemize}
         \item In ecological and evolutionary biology, ordinary linear models are not always well suited for data analysis.
         \begin{itemize}
-          \item Presence/absence and count data are two common situations where a linear model is not well suited (non-normal responses).
-          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements violate independence assumptions (correlated observations).
+          \item Presence/absence and count data are common.
+          \item Dependence between observations occur through repeated measures, clustered observations, or within spatial elements.
         \end{itemize}
-        \item If both non-normal responses and correlated observations occur in a dataset, we can use generalized linear mixed models (GLMMs) for estimation and inference.
+        \item With both non-normal responses and correlated observations, we can use generalized linear mixed models (GLMMs) for estimation and inference.
   \end{itemize}
-\end{frame}
-
-\begin{frame}{A Motivating Example}
-  \begin{itemize}
-        \item Owlet begging data from Roulin and Bersier (2007) is an example of a dataset suitable for analysis with GLMMs.
-        \begin{itemize}
-          \item Data consist of 599 observations from 27 barn owl nests in western Switzerland.
-          \item Response: number of calls in a 30 sec. interval before the parent arrived. 
-          \item Covariates used: brood size, food treatment, and arrival time of parent (between 2130 and 0530 hours).
-          \item Nest is treated as a random effect. 
-        \end{itemize}
-        \item Observations are correlated at the nest level due to repeated measurements and the count data should follow a Poisson distribution. The resulting model is:
-  \end{itemize}
-  
 \end{frame}
 
 \begin{frame}{Issues with Estimation}
@@ -147,21 +146,21 @@
    $$ L(\beta, D) = \prod_i \int f(Y_{ij}|b_i)f(b_i) db_i $$
 	
 	\begin{itemize}
-		\item Because of that, approximations of the integration or of the likelihood function need to be used. 
+		\item Because of that, approximations of the integration or of the likelihood function need to be used.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{GLMM Estimation Methods}
 	
 	\begin{itemize}
-		\item In place of closed form solutions, a number of approximation methods have been developed since the first major introduction of GLMMs by McCullagh and Nelder (1989). Commonly used approximations include:
+		\item Commonly used approximations for GLMM likelihoods include:
     	\begin{itemize}
     	  \item Laplace Approximation
     		\item (Adaptive) Gaussian Hermite Quadrature (AGHQ)
     		\item Penalized Quasi-likelihood
     	\end{itemize}
-		\item Bayesian approaches to GLMMs are also commonly used as it sidesteps the issues integration issues involved with the exact likelihood.
-		\item Non-Bayesian Monte Carlo methods are available, but their implementation is not easy and are poorly documented.
+		\item Bayesian approaches to GLMMs are also commonly used.
+		\item Non-Bayesian Monte Carlo methods are available, but implementation is difficult and packages are poorly documented.
 	\end{itemize}
 
 \end{frame}
