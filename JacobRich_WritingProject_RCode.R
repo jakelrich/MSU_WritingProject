@@ -162,14 +162,13 @@ glmm.sim <- function(model_object, iter, seed){
     sigma_re_ests[i,4] <- bayes_stats[33,1]
     
     ###(Hopefully) print the iteration of simulation
-    print(iter)
-  }
-  
-  ###Saving as a list for returning    
-  sim_results <- list(beta = beta_ests, rand = rand_ests, sigma = sigma_re_ests)
-  ###Saving simulations as RData file every 50 iterations (just in case).
-  if(iter==1 | iter==50 | iter==100 | iter==150 | iter==200 | iter==250 | iter==300 | iter==350 | iter==400 | iter==450 | iter==500){
-    saveRDS(sim_results, file = "D:/Google Drive/18 - Writing Project/simulations.RData")
+    print(i)
+    ###Saving as a list for returning    
+    sim_results <- list(beta = beta_ests, rand = rand_ests, sigma = sigma_re_ests)
+    ###Saving simulations as RData file every 50 iterations (just in case).
+    if(i==1 | i==50 | i==100 | i==150 | i==200 | i==250 | i==300 | i==350 | i==400 | i==450 | i==500){
+      saveRDS(sim_results, file = "D:/Google Drive/18 - Writing Project/simulations.RData")
+    }
   }
   return(sim_results)
 }
